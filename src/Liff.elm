@@ -11,11 +11,14 @@ import Json.Encode as E
 -}
 type alias Event =
     { method : String
-    , params : E.Value
+    , data : E.Value
     }
 
 
 port sendEvent : Event -> Cmd msg
+
+
+port receiveEvent : (Event -> msg) -> Sub msg
 
 
 
@@ -41,7 +44,7 @@ sendMessages : List Message -> Cmd msg
 sendMessages msgs =
     sendEvent <|
         { method = "sendMessages"
-        , params = E.list E.object (List.map transformMessage msgs)
+        , data = E.list E.object (List.map transformMessage msgs)
         }
 
 
