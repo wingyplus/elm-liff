@@ -7,7 +7,15 @@ import Json.Encode as E
 -- PORTS
 
 
-port sendEvent : E.Value -> Cmd msg
+{-| A protocol to communication over ports.
+-}
+type alias Event =
+    { method : String
+    , params : E.Value
+    }
+
+
+port sendEvent : Event -> Cmd msg
 
 
 
@@ -32,10 +40,9 @@ type Message
 sendMessages : List Message -> Cmd msg
 sendMessages msgs =
     sendEvent <|
-        E.object
-            [ ( "method", E.string "sendMessages" )
-            , ( "params", E.list E.object (List.map transformMessage msgs) )
-            ]
+        { method = "sendMessages"
+        , params = E.list E.object (List.map transformMessage msgs)
+        }
 
 
 
