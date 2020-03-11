@@ -3,7 +3,9 @@ module Demo exposing (main)
 import Browser
 import Html exposing (Html, button, div, input, text)
 import Html.Events exposing (onClick, onInput)
-import Liff exposing (Message(..), sendMessages)
+import Json.Decode as D
+import Json.Encode as E
+import Liff exposing (Message(..))
 
 
 main : Program () Model Msg
@@ -17,35 +19,36 @@ main =
 
 
 type alias Model =
-    String
+    { text : String, isLoggedIn : String }
 
 
 type Msg
     = InputText String
     | SendTextMessage
     | SendLocationMessage
+    | LiffAction Liff.Event
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( "", Cmd.none )
+    ( { text = "", isLoggedIn = "" }, Liff.isLoggedIn )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         InputText text ->
-            ( text, Cmd.none )
+            ( { model | text = text }, Cmd.none )
 
         SendTextMessage ->
             ( -- resetting text.
-              ""
-            , sendMessages [ TextMessage model ]
+              { model | text = "" }
+            , Liff.sendMessages [ TextMessage model.text ]
             )
 
         SendLocationMessage ->
             ( model
-            , sendMessages
+            , Liff.sendMessages
                 [ LocationMessage
                     { title = "my location"
                     , address = "Phahonyothin Rd, Thanon Phaya Thai, Ratchathewi, Bangkok 10400"
@@ -55,20 +58,30 @@ update msg model =
                 ]
             )
 
+        LiffAction evt ->
+            case evt.method of
+                "isLoggedIn" ->
+                    ( { model | isLoggedIn = E.encode 0 evt.data }, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.none
+    Liff.receiveEvent LiffAction
 
 
 view : Model -> Html Msg
 view model =
     div []
         [ div []
-            [ input [ onInput InputText ] [ text model ]
+            [ input [ onInput InputText ] [ text model.text ]
             , button [ onClick SendTextMessage ] [ text "Send Text" ]
             ]
         , div []
             [ button [ onClick SendLocationMessage ] [ text "Send Location" ]
             ]
+        , div []
+            [ text ("IsLoggedIn? " ++ model.isLoggedIn) ]
         ]

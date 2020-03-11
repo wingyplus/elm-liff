@@ -10,8 +10,14 @@ export function initialize(app, liff) {
     switch (evt.method) {
       case 'sendMessages':
         liff
-          .sendMessages(evt.params)
+          .sendMessages(evt.data)
           .catch((err) => console.log(`liff.sendMessages: have problems while sending messages: ${JSON.stringify(err)}`))
+
+      case 'isLoggedIn':
+        app.ports.receiveEvent.send({
+          method: 'isLoggedIn',
+          data: liff.isLoggedIn(),
+        })
     }
   })
 }

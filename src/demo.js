@@ -1,11 +1,11 @@
 import { Elm } from "./Demo.elm"
-import * as LiffExt from "./LIFFExtension"
+import * as LiffExt from "./LiffExtension"
 
 function main(liff) {
   initializeDebugger()
   liff
     .init({
-      liffId: ""
+      liffId: `${process.env.LIFF_ID}`
     })
     .then(
       () => {

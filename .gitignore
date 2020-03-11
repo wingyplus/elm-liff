@@ -2,3 +2,4 @@ elm-stuff
 dist
 .cache
 node_modules
+.env
