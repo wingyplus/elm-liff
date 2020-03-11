@@ -5,7 +5,7 @@ function main(liff) {
   initializeDebugger()
   liff
     .init({
-      liffId: ""
+      liffId: `${process.env.LIFF_ID}`
     })
     .then(
       () => {
