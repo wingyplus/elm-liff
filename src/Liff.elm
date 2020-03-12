@@ -1,4 +1,4 @@
-port module Liff exposing (Event, Message(..), isLoggedIn, receiveEvent, sendMessages)
+port module Liff exposing (Event, Message(..), inbound, isLoggedIn, sendMessages)
 
 import Json.Encode as E
 
@@ -15,10 +15,10 @@ type alias Event =
     }
 
 
-port sendEvent : Event -> Cmd msg
+port outbound : Event -> Cmd msg
 
 
-port receiveEvent : (Event -> msg) -> Sub msg
+port inbound : (Event -> msg) -> Sub msg
 
 
 
@@ -42,7 +42,7 @@ type Message
 -}
 sendMessages : List Message -> Cmd msg
 sendMessages msgs =
-    sendEvent <|
+    outbound <|
         { method = "sendMessages"
         , data = E.list E.object (List.map transformMessage msgs)
         }
@@ -50,7 +50,7 @@ sendMessages msgs =
 
 isLoggedIn : Cmd msg
 isLoggedIn =
-    sendEvent <|
+    outbound <|
         { method = "isLoggedIn"
         , data = E.null
         }

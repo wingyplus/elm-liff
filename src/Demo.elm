@@ -69,7 +69,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Liff.receiveEvent LiffAction
+    Liff.inbound LiffAction
 
 
 view : Model -> Html Msg
