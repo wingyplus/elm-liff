@@ -1,6 +1,5 @@
 port module Liff exposing
     ( Action(..)
-    , Event
     , Message(..)
     , isLoggedIn
     , receiveAction
@@ -15,18 +14,10 @@ import Json.Encode as E
 -- PORTS
 
 
-{-| A protocol to communication over ports.
--}
-type alias Event =
-    { method : String
-    , data : E.Value
-    }
+port liffOutbound : ( String, E.Value ) -> Cmd msg
 
 
-port liffOutbound : Event -> Cmd msg
-
-
-port liffInbound : (Event -> msg) -> Sub msg
+port liffInbound : (( String, D.Value ) -> msg) -> Sub msg
 
 
 type Action
@@ -42,9 +33,9 @@ receiveAction : (Action -> msg) -> Sub msg
 receiveAction f =
     liffInbound <|
         \evt ->
-            case evt.method of
-                "isLoggedIn" ->
-                    case D.decodeValue D.bool evt.data of
+            case evt of
+                ( "isLoggedIn", data ) ->
+                    case D.decodeValue D.bool data of
                         Ok b ->
                             f <| IsLoggedIn b
 
@@ -73,17 +64,17 @@ type Message
 sendMessages : List Message -> Cmd msg
 sendMessages msgs =
     liffOutbound <|
-        { method = "sendMessages"
-        , data = E.list E.object (List.map transformMessage msgs)
-        }
+        ( "sendMessages"
+        , E.list E.object (List.map transformMessage msgs)
+        )
 
 
 isLoggedIn : Cmd msg
 isLoggedIn =
     liffOutbound <|
-        { method = "isLoggedIn"
-        , data = E.null
-        }
+        ( "isLoggedIn"
+        , E.null
+        )
 
 
 

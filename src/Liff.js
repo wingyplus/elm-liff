@@ -4,20 +4,15 @@
  * @param {*} liff 
  */
 export function start(app, liff) {
-  app.ports.liffOutbound.subscribe((evt) => {
-    console.log(JSON.stringify(evt))
-
-    switch (evt.method) {
+  app.ports.liffOutbound.subscribe(([method, data]) => {
+    switch (method) {
       case 'sendMessages':
         liff
-          .sendMessages(evt.data)
+          .sendMessages(data)
           .catch((err) => console.log(`liff.sendMessages: have problems while sending messages: ${JSON.stringify(err)}`))
 
       case 'isLoggedIn':
-        app.ports.liffInbound.send({
-          method: 'isLoggedIn',
-          data: liff.isLoggedIn(),
-        })
+        app.ports.liffInbound.send(['isLoggedIn', liff.isLoggedIn()])
     }
   })
 }
