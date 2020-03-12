@@ -2,9 +2,8 @@ module Demo exposing (main)
 
 import Browser
 import Html exposing (Html, button, div, input, text)
+import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
-import Json.Decode as D
-import Json.Encode as E
 import Liff exposing (Message(..))
 
 
@@ -19,19 +18,21 @@ main =
 
 
 type alias Model =
-    { text : String, isLoggedIn : String }
+    { text : String
+    , isLoggedIn : Bool
+    }
 
 
 type Msg
     = InputText String
     | SendTextMessage
     | SendLocationMessage
-    | LiffAction Liff.Event
+    | LiffAction Liff.Action
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { text = "", isLoggedIn = "" }, Liff.isLoggedIn )
+    ( { text = "", isLoggedIn = False }, Liff.isLoggedIn )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -58,30 +59,39 @@ update msg model =
                 ]
             )
 
-        LiffAction evt ->
-            case evt.method of
-                "isLoggedIn" ->
-                    ( { model | isLoggedIn = E.encode 0 evt.data }, Cmd.none )
+        LiffAction inbound ->
+            case inbound of
+                Liff.IsLoggedIn loggedIn ->
+                    ( { model | isLoggedIn = loggedIn }, Cmd.none )
 
-                _ ->
+                Liff.Nothing ->
                     ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Liff.inbound LiffAction
+    Liff.receiveAction LiffAction
 
 
 view : Model -> Html Msg
 view model =
     div []
         [ div []
-            [ input [ onInput InputText ] [ text model.text ]
+            [ input [ onInput InputText, value model.text ] []
             , button [ onClick SendTextMessage ] [ text "Send Text" ]
             ]
         , div []
             [ button [ onClick SendLocationMessage ] [ text "Send Location" ]
             ]
         , div []
-            [ text ("IsLoggedIn? " ++ model.isLoggedIn) ]
+            [ text ("IsLoggedIn? " ++ b2s model.isLoggedIn) ]
         ]
+
+
+b2s : Bool -> String
+b2s b =
+    if b then
+        "True"
+
+    else
+        "False"

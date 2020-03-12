@@ -1,5 +1,13 @@
-port module Liff exposing (Event, Message(..), inbound, isLoggedIn, sendMessages)
+port module Liff exposing
+    ( Action(..)
+    , Event
+    , Message(..)
+    , isLoggedIn
+    , receiveAction
+    , sendMessages
+    )
 
+import Json.Decode as D
 import Json.Encode as E
 
 
@@ -21,8 +29,30 @@ port outbound : Event -> Cmd msg
 port inbound : (Event -> msg) -> Sub msg
 
 
+type Action
+    = IsLoggedIn Bool
+    | Nothing
+
+
 
 -- PUBLIC
+
+
+receiveAction : (Action -> msg) -> Sub msg
+receiveAction f =
+    inbound <|
+        \evt ->
+            case evt.method of
+                "isLoggedIn" ->
+                    case D.decodeValue D.bool evt.data of
+                        Ok b ->
+                            f <| IsLoggedIn b
+
+                        Err _ ->
+                            f <| IsLoggedIn False
+
+                _ ->
+                    f <| Nothing
 
 
 {-| Available messages in LIFF application.
