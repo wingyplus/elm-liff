@@ -1,5 +1,5 @@
 import { Elm } from "./Demo.elm"
-import * as LiffExt from "./LiffExtension"
+import * as Liff from "./Liff"
 
 function main(liff) {
   initializeDebugger()
@@ -26,7 +26,7 @@ function initializeApp(liff) {
   const app = Elm.Demo.init({
     node: document.querySelector('main')
   })
-  LiffExt.initialize(app, liff);
+  Liff.start(app, liff);
 }
 
 main(liff)

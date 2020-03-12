@@ -23,10 +23,10 @@ type alias Event =
     }
 
 
-port outbound : Event -> Cmd msg
+port liffOutbound : Event -> Cmd msg
 
 
-port inbound : (Event -> msg) -> Sub msg
+port liffInbound : (Event -> msg) -> Sub msg
 
 
 type Action
@@ -40,7 +40,7 @@ type Action
 
 receiveAction : (Action -> msg) -> Sub msg
 receiveAction f =
-    inbound <|
+    liffInbound <|
         \evt ->
             case evt.method of
                 "isLoggedIn" ->
@@ -72,7 +72,7 @@ type Message
 -}
 sendMessages : List Message -> Cmd msg
 sendMessages msgs =
-    outbound <|
+    liffOutbound <|
         { method = "sendMessages"
         , data = E.list E.object (List.map transformMessage msgs)
         }
@@ -80,7 +80,7 @@ sendMessages msgs =
 
 isLoggedIn : Cmd msg
 isLoggedIn =
-    outbound <|
+    liffOutbound <|
         { method = "isLoggedIn"
         , data = E.null
         }

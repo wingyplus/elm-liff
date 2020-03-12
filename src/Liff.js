@@ -3,8 +3,8 @@
  * @param {*} app 
  * @param {*} liff 
  */
-export function initialize(app, liff) {
-  app.ports.outbound.subscribe((evt) => {
+export function start(app, liff) {
+  app.ports.liffOutbound.subscribe((evt) => {
     console.log(JSON.stringify(evt))
 
     switch (evt.method) {
@@ -14,7 +14,7 @@ export function initialize(app, liff) {
           .catch((err) => console.log(`liff.sendMessages: have problems while sending messages: ${JSON.stringify(err)}`))
 
       case 'isLoggedIn':
-        app.ports.inbound.send({
+        app.ports.liffInbound.send({
           method: 'isLoggedIn',
           data: liff.isLoggedIn(),
         })
