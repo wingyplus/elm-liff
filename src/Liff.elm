@@ -52,7 +52,7 @@ receiveAction f =
                             f <| Error <| D.errorToString err
 
                 _ ->
-                    f <| Nothing
+                    f Nothing
 
 
 
@@ -63,24 +63,21 @@ receiveAction f =
 -}
 closeWindow : Cmd msg
 closeWindow =
-    liffOutbound <| ( "closeWindow", E.null )
+    liffOutbound ( "closeWindow", E.null )
 
 
 {-| Gets the current user's profile.
 -}
 getProfile : Cmd msg
 getProfile =
-    liffOutbound <| ( "getProfile", E.null )
+    liffOutbound ( "getProfile", E.null )
 
 
 {-| Checks whether the user is logged in.
 -}
 isLoggedIn : Cmd msg
 isLoggedIn =
-    liffOutbound <|
-        ( "isLoggedIn"
-        , E.null
-        )
+    liffOutbound ( "isLoggedIn", E.null )
 
 
 {-| Sends messages on behalf of the user to the chat screen where the LIFF
@@ -89,9 +86,9 @@ chat screen, messages cannot be sent.
 -}
 sendMessages : List Message -> Cmd msg
 sendMessages msgs =
-    liffOutbound <|
+    liffOutbound
         ( "sendMessages"
-        , E.list E.object (List.map transformMessage msgs)
+        , E.list E.object <| List.map transformMessage msgs
         )
 
 
