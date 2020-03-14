@@ -40,8 +40,8 @@ receiveAction f =
                         Ok b ->
                             f <| IsLoggedIn b
 
-                        Err _ ->
-                            f <| IsLoggedIn False
+                        Err err ->
+                            f <| D.errorToString err
 
                 ( "getProfile", data ) ->
                     case D.decodeValue decoderUserProfile <| Debug.log "user profile" data of
