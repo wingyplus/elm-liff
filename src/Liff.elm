@@ -47,8 +47,9 @@ receiveAction f =
                     f <| Nothing
 
 
-{-| Available messages in LIFF application.
+{-| Available messages that can be uses in LIFF app.
 
+TODO(wingyplus): implements template message.
 TODO(wingyplus): implements flex message.
 
 -}
@@ -60,7 +61,9 @@ type Message
     | LocationMessage { title : String, address : String, latitude : Float, longitude : Float }
 
 
-{-| Send messages into LIFF.
+{-| Sends messages on behalf of the user to the chat screen where the LIFF
+app is opened. If the LIFF app is opened on a screen other than the
+chat screen, messages cannot be sent.
 -}
 sendMessages : List Message -> Cmd msg
 sendMessages msgs =
@@ -70,6 +73,8 @@ sendMessages msgs =
         )
 
 
+{-| Checks whether the user is logged in.
+-}
 isLoggedIn : Cmd msg
 isLoggedIn =
     liffOutbound <|
@@ -78,7 +83,7 @@ isLoggedIn =
         )
 
 
-{-| Close the LIFF app.
+{-| Closes the LIFF app.
 -}
 closeWindow : Cmd msg
 closeWindow =
