@@ -100,22 +100,7 @@ isLoggedIn =
 -}
 openWindow : Url -> Cmd msg
 openWindow url =
-    let
-        params =
-            case url of
-                Internal u ->
-                    E.object
-                        [ ( "url", E.string u )
-                        , ( "external", E.bool False )
-                        ]
-
-                External u ->
-                    E.object
-                        [ ( "url", E.string u )
-                        , ( "external", E.bool True )
-                        ]
-    in
-    liffOutbound ( "openWindow", params )
+    liffOutbound ( "openWindow", encodeUrl url )
 
 
 {-| Sends messages on behalf of the user to the chat screen where the LIFF
@@ -141,6 +126,22 @@ type Url
       Internal String
       -- An url for open in external browser.
     | External String
+
+
+encodeUrl : Url -> E.Value
+encodeUrl url =
+    case url of
+        Internal u ->
+            E.object
+                [ ( "url", E.string u )
+                , ( "external", E.bool False )
+                ]
+
+        External u ->
+            E.object
+                [ ( "url", E.string u )
+                , ( "external", E.bool True )
+                ]
 
 
 
