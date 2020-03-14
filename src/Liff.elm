@@ -1,7 +1,9 @@
 port module Liff exposing
     ( Action(..)
     , Message(..)
+    , UserProfile
     , closeWindow
+    , getProfile
     , isLoggedIn
     , receiveAction
     , sendMessages
@@ -23,6 +25,8 @@ port liffInbound : (( String, D.Value ) -> msg) -> Sub msg
 
 type Action
     = IsLoggedIn Bool
+    | GetProfile UserProfile
+    | Error String
     | Nothing
 
 
@@ -39,6 +43,14 @@ receiveAction f =
                         Err _ ->
                             f <| IsLoggedIn False
 
+                ( "getProfile", data ) ->
+                    case D.decodeValue decoderUserProfile <| Debug.log "user profile" data of
+                        Ok profile ->
+                            f <| GetProfile profile
+
+                        Err err ->
+                            f <| Error <| D.errorToString err
+
                 _ ->
                     f <| Nothing
 
@@ -52,6 +64,13 @@ receiveAction f =
 closeWindow : Cmd msg
 closeWindow =
     liffOutbound <| ( "closeWindow", E.null )
+
+
+{-| Gets the current user's profile.
+-}
+getProfile : Cmd msg
+getProfile =
+    liffOutbound <| ( "getProfile", E.null )
 
 
 {-| Checks whether the user is logged in.
@@ -74,6 +93,27 @@ sendMessages msgs =
         ( "sendMessages"
         , E.list E.object (List.map transformMessage msgs)
         )
+
+
+
+-- PROFILE
+
+
+type alias UserProfile =
+    { userId : String
+    , displayName : String
+    , pictureUrl : String
+    , statusMessage : Maybe String
+    }
+
+
+decoderUserProfile : D.Decoder UserProfile
+decoderUserProfile =
+    D.map4 UserProfile
+        (D.field "userId" D.string)
+        (D.field "displayName" D.string)
+        (D.field "pictureUrl" D.string)
+        (D.maybe (D.field "statusMessage" D.string))
 
 
 

@@ -17,6 +17,9 @@ export function start(app, liff) {
       case 'closeWindow':
         handleCloseWindow(liff)
         break;
+      case 'getProfile':
+        handleGetProfile(app, liff)
+        break;
     }
   })
 }
@@ -46,4 +49,16 @@ function handleIsLoggedIn(app) {
  */
 function handleCloseWindow(liff) {
   liff.closeWindow()
+}
+
+/**
+ * getUserProfile handler.
+ * @param {*} app
+ * @param {liff} liff
+ */
+function handleGetProfile(app, liff) {
+  liff
+    .getProfile()
+    .then(profile => app.ports.liffInbound.send(['getProfile', profile]))
+    .catch(err => `liff.getProfile: have problems while getting a user profile: ${JSON.stringify(err)}`)
 }

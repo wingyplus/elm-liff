@@ -1,4 +1,11 @@
 declare module liff {
+  type UserProfile = {
+    userId: string
+    displayName: string
+    pictureUrl: string
+    statusMessage?: string
+  }
+
   /**
    * Sends messages on behalf of the user to the chat screen where the LIFF
    * app is opened. If the LIFF app is opened on a screen other than the
@@ -16,4 +23,9 @@ declare module liff {
    * Closes the LIFF app.
    */
   function closeWindow(): void;
+
+  /**
+   * Gets the current user's profile.
+   */
+  function getProfile(): Promise<UserProfile>
 }

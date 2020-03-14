@@ -1,7 +1,7 @@
 module Demo exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, input, text)
+import Html exposing (Html, button, div, img, input, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Liff exposing (Message(..))
@@ -20,6 +20,8 @@ main =
 type alias Model =
     { text : String
     , isLoggedIn : Bool
+    , profile : Liff.UserProfile
+    , error : String
     }
 
 
@@ -28,12 +30,24 @@ type Msg
     | SendTextMessage
     | SendLocationMessage
     | CloseWindow
+    | GetProfile
     | LiffAction Liff.Action
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { text = "", isLoggedIn = False }, Liff.isLoggedIn )
+    ( { text = ""
+      , isLoggedIn = False
+      , profile =
+            { userId = ""
+            , displayName = ""
+            , pictureUrl = ""
+            , statusMessage = Nothing
+            }
+      , error = ""
+      }
+    , Liff.isLoggedIn
+    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -60,6 +74,9 @@ update msg model =
                 ]
             )
 
+        GetProfile ->
+            ( model, Liff.getProfile )
+
         CloseWindow ->
             ( model, Liff.closeWindow )
 
@@ -67,6 +84,12 @@ update msg model =
             case inbound of
                 Liff.IsLoggedIn loggedIn ->
                     ( { model | isLoggedIn = loggedIn }, Cmd.none )
+
+                Liff.GetProfile profile ->
+                    ( { model | profile = profile }, Cmd.none )
+
+                Liff.Error err ->
+                    ( { model | error = err }, Cmd.none )
 
                 Liff.Nothing ->
                     ( model, Cmd.none )
@@ -91,6 +114,22 @@ view model =
             [ text ("IsLoggedIn? " ++ b2s model.isLoggedIn) ]
         , div []
             [ button [ onClick CloseWindow ] [ text "Closing Window." ] ]
+        , div []
+            [ button [ onClick GetProfile ] [ text "Get User Profile" ]
+            , div []
+                [ text "My user id: "
+                , text <| omitUserId model.profile.userId
+                ]
+            , div []
+                [ text "My username: "
+                , text model.profile.displayName
+                ]
+            , div []
+                [ text "My pictureUrl: "
+                , img [ src model.profile.pictureUrl ] []
+                ]
+            ]
+        , div [] [ text model.error ]
         ]
 
 
@@ -101,3 +140,11 @@ b2s b =
 
     else
         "False"
+
+
+omitUserId : String -> String
+omitUserId userId =
+    String.replace
+        (String.slice 5 15 userId)
+        (String.repeat 10 "*")
+        userId
