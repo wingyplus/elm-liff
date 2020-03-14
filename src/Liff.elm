@@ -109,10 +109,7 @@ chat screen, messages cannot be sent.
 -}
 sendMessages : List Message -> Cmd msg
 sendMessages msgs =
-    liffOutbound
-        ( "sendMessages"
-        , E.list E.object <| List.map transformMessage msgs
-        )
+    liffOutbound ( "sendMessages", encodeMessages msgs )
 
 
 
@@ -185,10 +182,17 @@ type Message
     | LocationMessage { title : String, address : String, latitude : Float, longitude : Float }
 
 
+{-| Transform list of Message into json object.
+-}
+encodeMessages : List Message -> E.Value
+encodeMessages msgs =
+    E.list E.object <| List.map encodeMessage msgs
+
+
 {-| Transform Message into json object.
 -}
-transformMessage : Message -> List ( String, E.Value )
-transformMessage msg =
+encodeMessage : Message -> List ( String, E.Value )
+encodeMessage msg =
     case msg of
         TextMessage text ->
             [ ( "type", E.string "text" )
