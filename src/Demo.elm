@@ -30,6 +30,7 @@ type Msg
     | SendTextMessage
     | SendLocationMessage
     | CloseWindow
+    | OpenWindow
     | GetProfile
     | LiffReply Liff.FuncReply
 
@@ -80,6 +81,9 @@ update msg model =
         CloseWindow ->
             ( model, Liff.closeWindow )
 
+        OpenWindow ->
+            ( model, Liff.openWindow <| Liff.External "https://line.me" )
+
         LiffReply inbound ->
             case inbound of
                 Liff.IsLoggedInReply loggedIn ->
@@ -114,6 +118,8 @@ view model =
             [ text ("IsLoggedIn? " ++ b2s model.isLoggedIn) ]
         , div []
             [ button [ onClick CloseWindow ] [ text "Closing Window." ] ]
+        , div []
+            [ button [ onClick OpenWindow ] [ text "Open Window." ] ]
         , div []
             [ button [ onClick GetProfile ] [ text "Get User Profile" ]
             , div []

@@ -1,10 +1,12 @@
 port module Liff exposing
     ( FuncReply(..)
     , Message(..)
+    , Url(..)
     , UserProfile
     , closeWindow
     , getProfile
     , isLoggedIn
+    , openWindow
     , reply
     , sendMessages
     )
@@ -82,6 +84,28 @@ isLoggedIn =
     liffOutbound ( "isLoggedIn", E.null )
 
 
+{-| Opens the specified URL in the in-app browser of LINE or external browser.
+-}
+openWindow : Url -> Cmd msg
+openWindow url =
+    let
+        params =
+            case url of
+                Internal u ->
+                    E.object
+                        [ ( "url", E.string u )
+                        , ( "external", E.bool False )
+                        ]
+
+                External u ->
+                    E.object
+                        [ ( "url", E.string u )
+                        , ( "external", E.bool True )
+                        ]
+    in
+    liffOutbound ( "openWindow", params )
+
+
 {-| Sends messages on behalf of the user to the chat screen where the LIFF
 app is opened. If the LIFF app is opened on a screen other than the
 chat screen, messages cannot be sent.
@@ -92,6 +116,15 @@ sendMessages msgs =
         ( "sendMessages"
         , E.list E.object <| List.map transformMessage msgs
         )
+
+
+
+-- URL
+
+
+type Url
+    = Internal String
+    | External String
 
 
 

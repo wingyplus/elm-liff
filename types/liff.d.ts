@@ -28,4 +28,10 @@ declare module liff {
    * Gets the current user's profile.
    */
   function getProfile(): Promise<UserProfile>
+
+  /**
+   * Opens the specified URL in the in-app browser of LINE or external browser.
+   * @param param0
+   */
+  function openWindow({ url: string, external: boolean }): void
 }

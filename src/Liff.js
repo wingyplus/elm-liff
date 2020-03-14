@@ -20,6 +20,9 @@ export function start(app, liff) {
       case 'getProfile':
         handleGetProfile(app, liff)
         break;
+      case 'openWindow':
+        handleOpenWindow(liff, data)
+        break;
     }
   })
 }
@@ -61,4 +64,13 @@ function handleGetProfile(app, liff) {
     .getProfile()
     .then(profile => app.ports.liffInbound.send(['getProfile', profile]))
     .catch(err => `liff.getProfile: have problems while getting a user profile: ${JSON.stringify(err)}`)
+}
+
+/**
+ * openWindow handler.
+ * @param {liff} liff
+ * @param {*} data
+ */
+function handleOpenWindow(liff, data) {
+  liff.openWindow(data)
 }
