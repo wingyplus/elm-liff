@@ -176,22 +176,22 @@ transformMessage msg =
             , ( "text", E.string text )
             ]
 
-        ImageMessage _ ->
+        ImageMessage img ->
             [ ( "type", E.string "image" )
-
-            -- TODO(wingyplus): map image message.
+            , ( "originalContentUrl", E.string img.originalContentUrl )
+            , ( "previewImageUrl", E.string img.previewImageUrl )
             ]
 
-        VideoMessage _ ->
+        VideoMessage video ->
             [ ( "type", E.string "video" )
-
-            -- TODO(wingyplus): map video message.
+            , ( "originalContentUrl", E.string video.originalContentUrl )
+            , ( "previewImageUrl", E.string video.previewImageUrl )
             ]
 
-        AudioMessage _ ->
+        AudioMessage audio ->
             [ ( "type", E.string "audio" )
-
-            -- TODO(wingyplus): map audio message.
+            , ( "originalContentUrl", E.string audio.originalContentUrl )
+            , ( "duration", E.int audio.duration )
             ]
 
         LocationMessage location ->
