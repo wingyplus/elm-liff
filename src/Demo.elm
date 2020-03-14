@@ -101,7 +101,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Liff.reply LiffReply
+    Liff.subscription LiffReply
 
 
 view : Model -> Html Msg

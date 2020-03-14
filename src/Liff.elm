@@ -7,8 +7,8 @@ port module Liff exposing
     , getProfile
     , isLoggedIn
     , openWindow
-    , reply
     , sendMessages
+    , subscription
     )
 
 import Json.Decode as D
@@ -34,8 +34,8 @@ type FuncReply
 
 {-| Listen reply from LIFF.
 -}
-reply : (FuncReply -> msg) -> Sub msg
-reply f =
+subscription : (FuncReply -> msg) -> Sub msg
+subscription f =
     liffInbound <|
         \evt ->
             case evt of
