@@ -31,7 +31,7 @@ type Msg
     | SendLocationMessage
     | CloseWindow
     | GetProfile
-    | LiffAction Liff.Action
+    | LiffReply Liff.FuncReply
 
 
 init : () -> ( Model, Cmd Msg )
@@ -80,24 +80,24 @@ update msg model =
         CloseWindow ->
             ( model, Liff.closeWindow )
 
-        LiffAction inbound ->
+        LiffReply inbound ->
             case inbound of
-                Liff.IsLoggedIn loggedIn ->
+                Liff.IsLoggedInReply loggedIn ->
                     ( { model | isLoggedIn = loggedIn }, Cmd.none )
 
-                Liff.GetProfile profile ->
+                Liff.GetProfileReply profile ->
                     ( { model | profile = profile }, Cmd.none )
 
-                Liff.Error err ->
+                Liff.ErrorReply err ->
                     ( { model | error = err }, Cmd.none )
 
-                Liff.Nothing ->
+                Liff.NoopReply ->
                     ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Liff.receiveAction LiffAction
+    Liff.reply LiffReply
 
 
 view : Model -> Html Msg

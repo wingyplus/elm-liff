@@ -1,11 +1,11 @@
 port module Liff exposing
-    ( Action(..)
+    ( FuncReply(..)
     , Message(..)
     , UserProfile
     , closeWindow
     , getProfile
     , isLoggedIn
-    , receiveAction
+    , reply
     , sendMessages
     )
 
@@ -23,36 +23,38 @@ port liffOutbound : ( String, E.Value ) -> Cmd msg
 port liffInbound : (( String, D.Value ) -> msg) -> Sub msg
 
 
-type Action
-    = IsLoggedIn Bool
-    | GetProfile UserProfile
-    | Error String
-    | Nothing
+type FuncReply
+    = IsLoggedInReply Bool
+    | GetProfileReply UserProfile
+    | ErrorReply String
+    | NoopReply
 
 
-receiveAction : (Action -> msg) -> Sub msg
-receiveAction f =
+{-| Listen reply from LIFF.
+-}
+reply : (FuncReply -> msg) -> Sub msg
+reply f =
     liffInbound <|
         \evt ->
             case evt of
                 ( "isLoggedIn", data ) ->
                     case D.decodeValue D.bool data of
                         Ok b ->
-                            f <| IsLoggedIn b
+                            f <| IsLoggedInReply b
 
                         Err err ->
-                            f <| Error <| D.errorToString err
+                            f <| ErrorReply <| D.errorToString err
 
                 ( "getProfile", data ) ->
                     case D.decodeValue decoderUserProfile data of
                         Ok profile ->
-                            f <| GetProfile profile
+                            f <| GetProfileReply profile
 
                         Err err ->
-                            f <| Error <| D.errorToString err
+                            f <| ErrorReply <| D.errorToString err
 
                 _ ->
-                    f Nothing
+                    f NoopReply
 
 
 
