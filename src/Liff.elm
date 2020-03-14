@@ -41,10 +41,10 @@ receiveAction f =
                             f <| IsLoggedIn b
 
                         Err err ->
-                            f <| D.errorToString err
+                            f <| Error <| D.errorToString err
 
                 ( "getProfile", data ) ->
-                    case D.decodeValue decoderUserProfile <| Debug.log "user profile" data of
+                    case D.decodeValue decoderUserProfile data of
                         Ok profile ->
                             f <| GetProfile profile
 
