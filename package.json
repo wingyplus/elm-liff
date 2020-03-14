@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "demo": "NODE_ENV=* parcel index.html"
+    "demo": "NODE_ENV=* parcel index.html",
+    "build-demo": "NODE_ENV=* parcel build index.html"
   },
   "keywords": [],
   "author": "",
