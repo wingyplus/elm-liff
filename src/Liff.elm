@@ -25,6 +25,10 @@ port liffOutbound : ( String, E.Value ) -> Cmd msg
 port liffInbound : (( String, D.Value ) -> msg) -> Sub msg
 
 
+
+-- SUBSCRIPTION
+
+
 type FuncReply
     = IsLoggedInReply Bool
     | GetProfileReply UserProfile
@@ -32,7 +36,7 @@ type FuncReply
     | NoopReply
 
 
-{-| Listen reply from LIFF.
+{-| A subscription for LIFF app.
 -}
 subscription : (FuncReply -> msg) -> Sub msg
 subscription f =
@@ -48,7 +52,7 @@ subscription f =
                             f <| ErrorReply <| D.errorToString err
 
                 ( "getProfile", data ) ->
-                    case D.decodeValue decoderUserProfile data of
+                    case D.decodeValue decodeUserProfile data of
                         Ok profile ->
                             f <| GetProfileReply profile
 
@@ -139,8 +143,8 @@ type alias UserProfile =
     }
 
 
-decoderUserProfile : D.Decoder UserProfile
-decoderUserProfile =
+decodeUserProfile : D.Decoder UserProfile
+decodeUserProfile =
     D.map4 UserProfile
         (D.field "userId" D.string)
         (D.field "displayName" D.string)
