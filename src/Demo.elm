@@ -27,6 +27,7 @@ type Msg
     = InputText String
     | SendTextMessage
     | SendLocationMessage
+    | CloseWindow
     | LiffAction Liff.Action
 
 
@@ -59,6 +60,9 @@ update msg model =
                 ]
             )
 
+        CloseWindow ->
+            ( model, Liff.closeWindow )
+
         LiffAction inbound ->
             case inbound of
                 Liff.IsLoggedIn loggedIn ->
@@ -85,6 +89,8 @@ view model =
             ]
         , div []
             [ text ("IsLoggedIn? " ++ b2s model.isLoggedIn) ]
+        , div []
+            [ button [ onClick CloseWindow ] [ text "Closing Window." ] ]
         ]
 
 

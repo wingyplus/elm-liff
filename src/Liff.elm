@@ -1,6 +1,7 @@
 port module Liff exposing
     ( Action(..)
     , Message(..)
+    , closeWindow
     , isLoggedIn
     , receiveAction
     , sendMessages
@@ -75,6 +76,13 @@ isLoggedIn =
         ( "isLoggedIn"
         , E.null
         )
+
+
+{-| Close the LIFF app.
+-}
+closeWindow : Cmd msg
+closeWindow =
+    liffOutbound <| ( "closeWindow", E.null )
 
 
 
