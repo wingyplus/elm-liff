@@ -26,10 +26,6 @@ type Action
     | Nothing
 
 
-
--- PUBLIC
-
-
 receiveAction : (Action -> msg) -> Sub msg
 receiveAction f =
     liffInbound <|
@@ -47,18 +43,25 @@ receiveAction f =
                     f <| Nothing
 
 
-{-| Available messages that can be uses in LIFF app.
 
-TODO(wingyplus): implements template message.
-TODO(wingyplus): implements flex message.
+-- LIFF
 
+
+{-| Closes the LIFF app.
 -}
-type Message
-    = TextMessage String
-    | ImageMessage { originalContentUrl : String, previewImageUrl : String }
-    | VideoMessage { originalContentUrl : String, previewImageUrl : String }
-    | AudioMessage { originalContentUrl : String, duration : Int }
-    | LocationMessage { title : String, address : String, latitude : Float, longitude : Float }
+closeWindow : Cmd msg
+closeWindow =
+    liffOutbound <| ( "closeWindow", E.null )
+
+
+{-| Checks whether the user is logged in.
+-}
+isLoggedIn : Cmd msg
+isLoggedIn =
+    liffOutbound <|
+        ( "isLoggedIn"
+        , E.null
+        )
 
 
 {-| Sends messages on behalf of the user to the chat screen where the LIFF
@@ -73,25 +76,22 @@ sendMessages msgs =
         )
 
 
-{-| Checks whether the user is logged in.
+
+-- MESSAGE
+
+
+{-| Available messages that can be uses in LIFF app.
+
+TODO(wingyplus): implements template message.
+TODO(wingyplus): implements flex message.
+
 -}
-isLoggedIn : Cmd msg
-isLoggedIn =
-    liffOutbound <|
-        ( "isLoggedIn"
-        , E.null
-        )
-
-
-{-| Closes the LIFF app.
--}
-closeWindow : Cmd msg
-closeWindow =
-    liffOutbound <| ( "closeWindow", E.null )
-
-
-
--- PRIVATE
+type Message
+    = TextMessage String
+    | ImageMessage { originalContentUrl : String, previewImageUrl : String }
+    | VideoMessage { originalContentUrl : String, previewImageUrl : String }
+    | AudioMessage { originalContentUrl : String, duration : Int }
+    | LocationMessage { title : String, address : String, latitude : Float, longitude : Float }
 
 
 {-| Transform Message into json object.
