@@ -32,7 +32,7 @@ type Msg
     | CloseWindow
     | OpenWindow
     | GetProfile
-    | LiffReply Liff.FuncReply
+    | LiffReply Liff.Reply
 
 
 init : () -> ( Model, Cmd Msg )
@@ -84,8 +84,8 @@ update msg model =
         OpenWindow ->
             ( model, Liff.openWindow <| Liff.External "https://line.me" )
 
-        LiffReply inbound ->
-            case inbound of
+        LiffReply reply ->
+            case reply of
                 Liff.IsLoggedInReply loggedIn ->
                     ( { model | isLoggedIn = loggedIn }, Cmd.none )
 

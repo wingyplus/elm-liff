@@ -1,6 +1,6 @@
 port module Liff exposing
-    ( FuncReply(..)
-    , Message(..)
+    ( Message(..)
+    , Reply(..)
     , Url(..)
     , UserProfile
     , closeWindow
@@ -29,16 +29,24 @@ port liffInbound : (( String, D.Value ) -> msg) -> Sub msg
 -- SUBSCRIPTION
 
 
-type FuncReply
-    = IsLoggedInReply Bool
+{-| A reply from liff inbound port.
+-}
+type Reply
+    = -- It's returns value from liff.isLoggedIn().
+      IsLoggedInReply Bool
+      -- It's returns value from liff.getProfile().
     | GetProfileReply UserProfile
+      -- It's an error when something is wrong such as cannot
+      -- decode json, liff has an error, etc.
     | ErrorReply String
+      -- It's returns value when receive something unexpected from
+      -- inbound port.
     | NoopReply
 
 
 {-| A subscription for LIFF app.
 -}
-subscription : (FuncReply -> msg) -> Sub msg
+subscription : (Reply -> msg) -> Sub msg
 subscription f =
     liffInbound <|
         \evt ->
@@ -126,8 +134,12 @@ sendMessages msgs =
 -- URL
 
 
+{-| An url object for LIFF app.
+-}
 type Url
-    = Internal String
+    = -- An url for open within LIFF app.
+      Internal String
+      -- An url for open in external browser.
     | External String
 
 
@@ -135,6 +147,8 @@ type Url
 -- PROFILE
 
 
+{-| LINE user profile.
+-}
 type alias UserProfile =
     { userId : String
     , displayName : String
