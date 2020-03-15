@@ -19,7 +19,9 @@ function main(liff) {
 }
 
 function initializeDebugger() {
-  const _ = new VConsole()
+  if (process.env.DEBUG === "1") {
+    const _ = new VConsole()
+  }
 }
 
 function initializeApp(liff) {
