@@ -8,7 +8,8 @@
   },
   "scripts": {
     "demo": "NODE_ENV=* parcel index.html",
-    "build-demo": "NODE_ENV=* parcel build index.html"
+    "build-demo": "NODE_ENV=* parcel build index.html",
+    "fix": "eslint --fix src/*.js"
   },
   "keywords": [],
   "author": "",
