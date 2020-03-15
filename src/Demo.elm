@@ -23,6 +23,7 @@ type alias Model =
     , profile : Liff.UserProfile
     , token : String
     , error : String
+    , language : String
     }
 
 
@@ -48,8 +49,13 @@ init _ =
             }
       , error = ""
       , token = ""
+      , language = ""
       }
-    , Cmd.batch [ Liff.isLoggedIn, Liff.getAccessToken ]
+    , Cmd.batch
+        [ Liff.isLoggedIn
+        , Liff.getAccessToken
+        , Liff.getLanguage
+        ]
     )
 
 
@@ -100,6 +106,9 @@ update msg model =
                 Liff.GetAccessTokenReply token ->
                     ( { model | token = token }, Cmd.none )
 
+                Liff.GetLanguageReply lang ->
+                    ( { model | language = lang }, Cmd.none )
+
                 Liff.NoopReply ->
                     ( model, Cmd.none )
 
@@ -119,6 +128,8 @@ view model =
         , div []
             [ button [ onClick SendLocationMessage ] [ text "Send Location" ]
             ]
+        , div []
+            [ text ("My language: " ++ model.language) ]
         , div []
             [ text ("IsLoggedIn? " ++ b2s model.isLoggedIn) ]
         , div []

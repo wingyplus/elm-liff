@@ -26,6 +26,9 @@ export function start(app, liff) {
       case 'getAccessToken':
         handleGetAccessToken(app, liff, data)
         break;
+      case 'getLanguage':
+        handleGetLanguage(app, liff, data)
+        break;
     }
   })
 }
@@ -85,4 +88,13 @@ function handleOpenWindow(app, liff, data) {
  */
 function handleGetAccessToken(app, liff, data) {
   app.ports.liffInbound.send(['getAccessToken', liff.getAccessToken()])
+}
+
+/**
+ * getLanguage handler.
+ * @param {*} app
+ * @param {liff} liff
+ */
+function handleGetLanguage(app, liff, data) {
+  app.ports.liffInbound.send(['getLanguage', liff.getLanguage()])
 }
