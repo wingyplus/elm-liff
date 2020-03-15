@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+// eslint-disable-next-line spaced-comment
 ///<references path="../types/liff.d.ts"/>
 
 /**
@@ -18,19 +20,20 @@
  * .then(app => Liff.start(app, liff))
  *
  * @param {*} ElmApp is an Elm application. For example: `Elm.Main`.
- * @param {*} config is a configuration for Elm application. This required `liffId` to be appear in config.flags.
+ * @param {*} config is a configuration for Elm application. This
+ *                   required `liffId` to be appear in config.flags.
  *
- * @returns {Promise} Return Promise of Elm application.
+ * @return {Promise} Return Promise of Elm application.
  */
 export function init(ElmApp, config) {
   if (!liff) {
-    return Promise.reject("ERROR: no LIFF SDK found. Please checking LIFF SDK in script tag.")
+    // eslint-disable-next-line prefer-promise-reject-errors
+    return Promise.reject(new Error('ERROR: no LIFF SDK found. Please checking LIFF SDK in script tag.'));
   }
   return liff
-    .init({ liffId: config.flags.liffId })
-    .then(() => ElmApp.init(config))
-    .then(app => start(app))
-    .catch(err => alert(`ERROR: liff.init(): initialize failed: ${JSON.stringify(err)}`))
+      .init({liffId: config.flags.liffId})
+      .then(() => ElmApp.init(config))
+      .then((app) => start(app));
 }
 
 /**
@@ -41,104 +44,106 @@ function start(app) {
   app.ports.liffOutbound.subscribe(([method, data]) => {
     switch (method) {
       case 'closeWindow':
-        handleCloseWindow(app, data)
+        handleCloseWindow(app, data);
         break;
       case 'getAccessToken':
-        handleGetAccessToken(app, data)
+        handleGetAccessToken(app, data);
         break;
       case 'getProfile':
-        handleGetProfile(app, data)
+        handleGetProfile(app, data);
         break;
       case 'getLanguage':
-        handleGetLanguage(app, data)
+        handleGetLanguage(app, data);
         break;
       case 'getVersion':
-        handleGetVersion(app, data)
+        handleGetVersion(app, data);
         break;
       case 'isLoggedIn':
-        handleIsLoggedIn(app, data)
+        handleIsLoggedIn(app, data);
         break;
       case 'openWindow':
-        handleOpenWindow(app, data)
+        handleOpenWindow(app, data);
         break;
       case 'sendMessages':
-        handleSendMessages(app, data)
+        handleSendMessages(app, data);
         break;
     }
-  })
+  });
 }
 
 /**
  * closeWindow handler.
- * @param {liff} liff
+ * @param {*} app
+ * @param {*} _
  */
 function handleCloseWindow(app, _) {
-  liff.closeWindow()
+  liff.closeWindow();
 }
 
 /**
  * getAccessToken handler.
  * @param {*} app
- * @param {liff} liff
+ * @param {*} _
  */
 function handleGetAccessToken(app, _) {
-  app.ports.liffInbound.send(['getAccessToken', liff.getAccessToken()])
+  app.ports.liffInbound.send(['getAccessToken', liff.getAccessToken()]);
 }
 
 /**
  * getLanguage handler.
  * @param {*} app
- * @param {liff} liff
+ * @param {*} _
  */
 function handleGetLanguage(app, _) {
-  app.ports.liffInbound.send(['getLanguage', liff.getLanguage()])
+  app.ports.liffInbound.send(['getLanguage', liff.getLanguage()]);
 }
 
 /**
  * getUserProfile handler.
  * @param {*} app
- * @param {liff} liff
+ * @param {*} _
  */
 function handleGetProfile(app, _) {
   liff
-    .getProfile()
-    .then(profile => app.ports.liffInbound.send(['getProfile', profile]))
-    .catch(err => `liff.getProfile: have problems while getting a user profile: ${JSON.stringify(err)}`)
+      .getProfile()
+      .then((profile) => app.ports.liffInbound.send(['getProfile', profile]))
+      .catch((err) => `liff.getProfile: have problems while getting a user profile: ${JSON.stringify(err)}`);
 }
 
 /**
  * getVersion handler.
  * @param {*} app
- * @param {liff} liff
+ * @param {*} _
  */
 function handleGetVersion(app, _) {
-  app.ports.liffInbound.send(['getVersion', liff.getVersion()])
+  app.ports.liffInbound.send(['getVersion', liff.getVersion()]);
 }
 
 /**
  * isLoggedIn handler.
  * @param {*} app
+ * @param {*} _
  */
 function handleIsLoggedIn(app, _) {
-  app.ports.liffInbound.send(['isLoggedIn', liff.isLoggedIn()])
+  app.ports.liffInbound.send(['isLoggedIn', liff.isLoggedIn()]);
 }
 
 /**
  * openWindow handler.
- * @param {liff} liff
+ * @param {*} app
  * @param {*} param
  */
 function handleOpenWindow(app, param) {
-  liff.openWindow(param)
+  liff.openWindow(param);
 }
 
 /**
  * sendMessages handler.
- * @param {liff} liff
+ * @param {*} app
  * @param {*} messages
  */
 function handleSendMessages(app, messages) {
   liff
-    .sendMessages(messages)
-    .catch(err => `liff.sendMessages: have problems while sending messages: ${JSON.stringify(err)}`)
+      .sendMessages(messages)
+      .catch((err) => `liff.sendMessages: have problems while sending messages: ${JSON.stringify(err)}`);
 }
