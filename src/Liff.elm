@@ -115,14 +115,16 @@ closeWindow =
     liffOutbound ( "closeWindow", E.null )
 
 
-{-| TODO(wingyplus): implements it
+{-| Gets the current user's access token.
 -}
+getAccessToken : Cmd msg
 getAccessToken =
     liffOutbound ( "getAccessToken", E.null )
 
 
-{-| TODO(wingyplus): implements it
+{-| Gets the language settings of the environment in which the LIFF app is running.
 -}
+getLanguage : Cmd msg
 getLanguage =
     liffOutbound ( "getLanguage", E.null )
 
@@ -134,8 +136,9 @@ getProfile =
     liffOutbound ( "getProfile", E.null )
 
 
-{-| TODO(wingyplus): implements it
+{-| Gets the version of the LIFF SDK.
 -}
+getVersion : Cmd msg
 getVersion =
     liffOutbound ( "getVersion", E.null )
 
