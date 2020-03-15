@@ -1,7 +1,7 @@
 module Demo exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, img, input, text)
+import Html exposing (Html, button, div, h1, img, input, p, section, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Liff exposing (Message(..))
@@ -132,41 +132,58 @@ subscriptions _ =
 view : Model -> Html Msg
 view model =
     div []
-        [ div []
-            [ input [ onInput InputText, value model.text ] []
-            , button [ onClick SendTextMessage ] [ text "Send Text" ]
+        [ sectionView "Messages" <|
+            [ div []
+                [ input [ onInput InputText, value model.text ] []
+                , button [ onClick SendTextMessage ] [ text "Send Text" ]
+                ]
+            , div []
+                [ button [ onClick SendLocationMessage ] [ text "Send Location" ]
+                ]
             ]
-        , div []
-            [ button [ onClick SendLocationMessage ] [ text "Send Location" ]
+        , sectionView "LIFF properties" <|
+            [ p [ style "word-wrap" "break-word" ] [ text ("Version: " ++ model.version) ]
+            , p [ style "word-wrap" "break-word" ] [ text ("Language: " ++ model.language) ]
+            , p [ style "word-wrap" "break-word" ] [ text ("LoggedIn: " ++ b2s model.isLoggedIn) ]
             ]
-        , div []
-            [ text ("My version: " ++ model.version) ]
-        , div []
-            [ text ("My language: " ++ model.language) ]
-        , div []
-            [ text ("IsLoggedIn? " ++ b2s model.isLoggedIn) ]
-        , div []
-            [ text ("My access token: " ++ omitAccessToken model.token) ]
-        , div []
-            [ button [ onClick CloseWindow ] [ text "Closing Window." ] ]
-        , div []
-            [ button [ onClick OpenWindow ] [ text "Open Window." ] ]
-        , div []
+        , sectionView "Credentials" <|
+            [ p [ style "word-wrap" "break-word" ] [ text ("My access token: " ++ omit model.token) ]
+            ]
+        , sectionView "Open/Close window" <|
+            [ button [ onClick OpenWindow ] [ text "Open Window." ]
+            , button [ onClick CloseWindow ] [ text "Closing Window." ]
+            ]
+        , sectionView "User Profile" <|
             [ button [ onClick GetProfile ] [ text "Get User Profile" ]
             , div []
-                [ text "My user id: "
-                , text <| omitUserId model.profile.userId
+                [ text <| "User id: " ++ omit model.profile.userId
                 ]
             , div []
-                [ text "My username: "
-                , text model.profile.displayName
+                [ text <| "Username: " ++ model.profile.displayName
                 ]
             , div []
-                [ text "My pictureUrl: "
-                , img [ src model.profile.pictureUrl ] []
+                [ text "Picture profile: "
+                , img
+                    [ style "width" "50px"
+                    , style "height" "50px"
+                    , src model.profile.pictureUrl
+                    ]
+                    []
                 ]
             ]
         , div [] [ text model.error ]
+        ]
+
+
+sectionView : String -> List (Html msg) -> Html msg
+sectionView title content =
+    section
+        [ style "border" "black solid 1px"
+        , style "padding" "1em"
+        , style "margin" "0.5em"
+        ]
+        [ h1 [ style "font-size" "1em" ] [ text title ]
+        , div [] content
         ]
 
 
@@ -179,17 +196,13 @@ b2s b =
         "False"
 
 
-omitUserId : String -> String
-omitUserId userId =
+omit : String -> String
+omit s =
+    let
+        omitLen =
+            String.length s - 5
+    in
     String.replace
-        (String.slice 5 15 userId)
-        (String.repeat 10 "*")
-        userId
-
-
-omitAccessToken : String -> String
-omitAccessToken userId =
-    String.replace
-        (String.slice 5 25 userId)
-        (String.repeat 20 "*")
-        userId
+        (String.slice 5 omitLen s)
+        (String.repeat omitLen "*")
+        s
