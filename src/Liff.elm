@@ -82,11 +82,29 @@ closeWindow =
     liffOutbound ( "closeWindow", E.null )
 
 
+{-| TODO(wingyplus): implements it
+-}
+getAccessToken =
+    Cmd.none
+
+
+{-| TODO(wingyplus): implements it
+-}
+getLanguage =
+    Cmd.none
+
+
 {-| Gets the current user's profile.
 -}
 getProfile : Cmd msg
 getProfile =
     liffOutbound ( "getProfile", E.null )
+
+
+{-| TODO(wingyplus): implements it
+-}
+getVersion =
+    Cmd.none
 
 
 {-| Checks whether the user is logged in.
@@ -110,6 +128,12 @@ chat screen, messages cannot be sent.
 sendMessages : List Message -> Cmd msg
 sendMessages msgs =
     liffOutbound ( "sendMessages", encodeMessages msgs )
+
+
+{-| TODO(wingyplus): implements it
+-}
+shareTargetPicker =
+    Cmd.none
 
 
 
