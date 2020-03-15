@@ -35,19 +35,19 @@ port liffInbound : (( String, D.Value ) -> msg) -> Sub msg
 {-| A reply from liff inbound port.
 -}
 type Reply
-    = -- It's returns value from liff.isLoggedIn().
-      IsLoggedInReply Bool
+    = -- It's returns value from liff.getAccessToken().
+      GetAccessTokenReply String
+      -- It's returns value from liff.getLanguage().
+    | GetLanguageReply String
       -- It's returns value from liff.getProfile().
     | GetProfileReply UserProfile
+      -- It's returns value from liff.getVersion().
+    | GetVersionReply String
+      -- It's returns value from liff.isLoggedIn().
+    | IsLoggedInReply Bool
       -- It's an error when something is wrong such as cannot
       -- decode json, liff has an error, etc.
     | ErrorReply String
-      -- It's returns value from liff.getAccessToken().
-    | GetAccessTokenReply String
-      -- It's returns value from liff.getLanguage().
-    | GetLanguageReply String
-      -- It's returns value from liff.getVersion().
-    | GetVersionReply String
       -- It's returns value when receive something unexpected from
       -- inbound port.
     | NoopReply
@@ -60,22 +60,6 @@ subscription f =
     liffInbound <|
         \evt ->
             case evt of
-                ( "isLoggedIn", data ) ->
-                    case D.decodeValue D.bool data of
-                        Ok b ->
-                            f <| IsLoggedInReply b
-
-                        Err err ->
-                            f <| ErrorReply <| D.errorToString err
-
-                ( "getProfile", data ) ->
-                    case D.decodeValue decodeUserProfile data of
-                        Ok profile ->
-                            f <| GetProfileReply profile
-
-                        Err err ->
-                            f <| ErrorReply <| D.errorToString err
-
                 ( "getAccessToken", data ) ->
                     case D.decodeValue D.string data of
                         Ok token ->
@@ -92,10 +76,26 @@ subscription f =
                         Err err ->
                             f <| ErrorReply <| D.errorToString err
 
+                ( "getProfile", data ) ->
+                    case D.decodeValue decodeUserProfile data of
+                        Ok profile ->
+                            f <| GetProfileReply profile
+
+                        Err err ->
+                            f <| ErrorReply <| D.errorToString err
+
                 ( "getVersion", data ) ->
                     case D.decodeValue D.string data of
                         Ok v ->
                             f <| GetVersionReply v
+
+                        Err err ->
+                            f <| ErrorReply <| D.errorToString err
+
+                ( "isLoggedIn", data ) ->
+                    case D.decodeValue D.bool data of
+                        Ok b ->
+                            f <| IsLoggedInReply b
 
                         Err err ->
                             f <| ErrorReply <| D.errorToString err
