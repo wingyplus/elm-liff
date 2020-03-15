@@ -43,6 +43,15 @@ declare module liff {
    */
   function isLoggedIn(): boolean;
 
+
+  /**
+   * Initializes a LIFF app.
+   * @param config LIFF app ID.
+   * @param successCallback Callback to return a data object upon successful initialization of the LIFF app.
+   * @param errorCallback Callback to return an error object upon failure to initialize the LIFF app.
+   */
+  function init(config: { liffId: string }, successCallback?: Function, errorCallback?: Function): Promise<any>;
+
   /**
    * Opens the specified URL in the in-app browser of LINE or external browser.
    * @param params parameters for opening url.
