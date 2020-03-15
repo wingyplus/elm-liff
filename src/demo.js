@@ -17,4 +17,4 @@ function initializeDebugger() {
   }
 }
 
-main(liff)
+main()
