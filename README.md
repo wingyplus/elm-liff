@@ -1,19 +1,24 @@
 # elm-liff - Elm ports for LIFF application
 
-This library provides Elm ports for who want to uses
-Elm on LIFF application.
+Provides a LIFF SDK 2.+ ports for Elm application.
 
 ## How to use
 
-I didn't have a fully documentation yet. But
-you can see in `src/demo.js` and `src/Demo.elm` about
-how to use it.
+1. Add LIFF SDK to your html tag.
+2. Initialize by calling `liff.init()`.
+3. Download `src/Liff.elm` and `src/Liff.js` to your src directory.
+4. Add `Liff.start(elmApp, liff)` after init your Elm app.
+
+If it won't work or you have a problem, you can see an example
+in `src/demo.js` or open an issue.
 
 ## Limitation
 
-This library doesn't support a javascript that didn't 
-bundler tool such as webpack or parcel yet and I didn't 
+- This library doesn't support a javascript that didn't
+bundler tool such as webpack or parcel yet and I didn't
 have any plan to make it support.
+- This library didn't call `liff.init()` for you. You needs
+  to do it manually.
 
 ## Support
 
@@ -22,13 +27,13 @@ Here is the list that this library already supported:
 - [ ] liff.init()
 - [ ] liff.ready
 - [ ] liff.getOS()
-- [ ] liff.getLanguage()
-- [ ] liff.getVersion()
+- [x] liff.getLanguage()
+- [x] liff.getVersion()
 - [ ] liff.isInClient()
 - [x] liff.isLoggedIn()
 - [ ] liff.login()
 - [ ] liff.logout()
-- [ ] liff.getAccessToken()
+- [x] liff.getAccessToken()
 - [ ] liff.getContext()
 - [ ] liff.getDecodedIDToken()
 - [x] liff.getProfile()
@@ -43,11 +48,16 @@ Here is the list that this library already supported:
 - [ ] liff.bluetooth.requestDevice()
 - [ ] liff.bluetooth.referringDevice
 
-
 ## Credit
 
-- Most of doc comments are copied from [LIFF documentation](https://developers.line.biz/en/reference/liff/).
-- Ellie app for inspire me about ports design. 
-- ["The importance of ports"](https://www.youtube.com/channel/UCOpGiN9AkczVjlpGDaBwQrQ). This video might 
+- Most of documentation comments are copied from [LIFF documentation](https://developers.line.biz/en/reference/liff/).
+- Ellie app for inspire me about ports design.
+- ["The importance of ports"](https://www.youtube.com/channel/UCOpGiN9AkczVjlpGDaBwQrQ). This video might
   look too old but it's a great about ports design.
 
+## Feedback are welcome.
+
+As you know that ports module is couple with application module. That's means
+I cannot publish it to elm package registry yet. So I love to see that
+how do we manage this kind of library. If you have any feedback, I love to
+hear from you. :)
