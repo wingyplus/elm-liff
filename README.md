@@ -5,9 +5,9 @@ Provides a LIFF SDK 2.+ ports for Elm application.
 ## How to use
 
 1. Add LIFF SDK to your html tag.
-2. Initialize by calling `liff.init()`.
-3. Download `src/Liff.elm` and `src/Liff.js` to your src directory.
-4. Add `Liff.start(elmApp, liff)` after init your Elm app.
+2. Download `src/Liff.elm` and `src/Liff.js` to your src directory.
+3. Add `Liff.init(elmApp, {flags: {liffId: "your liff id"}})` to your code.
+4. Done.
 
 If it won't work or you have a problem, you can see an example
 in `src/demo.js` or open an issue.
@@ -15,8 +15,8 @@ in `src/demo.js` or open an issue.
 ## Limitation
 
 - This library doesn't support a javascript that didn't
-bundler tool such as webpack or parcel yet and I didn't
-have any plan to make it support.
+  use bundler tool such as webpack or parcel yet and I didn't
+  have any plan to make it support.
 - This library didn't call `liff.init()` for you. You needs
   to do it manually.
 
