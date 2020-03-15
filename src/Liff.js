@@ -9,22 +9,23 @@ export function start(app, liff) {
   app.ports.liffOutbound.subscribe(([method, data]) => {
     switch (method) {
       case 'sendMessages':
-        handleSendMessages(liff, data)
+        handleSendMessages(app, liff, data)
         break;
       case 'isLoggedIn':
-        handleIsLoggedIn(app)
+        handleIsLoggedIn(app, liff, data)
         break;
       case 'closeWindow':
-        handleCloseWindow(liff)
+        handleCloseWindow(app, liff, data)
         break;
       case 'getProfile':
-        handleGetProfile(app, liff)
+        handleGetProfile(app, liff, data)
         break;
       case 'openWindow':
-        handleOpenWindow(liff, data)
+        handleOpenWindow(app, liff, data)
         break;
       case 'getAccessToken':
-        handleGetAccessToken(app, liff)
+        handleGetAccessToken(app, liff, data)
+        break;
     }
   })
 }
@@ -34,7 +35,7 @@ export function start(app, liff) {
  * @param {liff} liff
  * @param {*} messages
  */
-function handleSendMessages(liff, messages) {
+function handleSendMessages(app, liff, messages) {
   liff
     .sendMessages(messages)
     .catch(err => `liff.sendMessages: have problems while sending messages: ${JSON.stringify(err)}`)
@@ -44,7 +45,7 @@ function handleSendMessages(liff, messages) {
  * isLoggedIn handler.
  * @param {*} app
  */
-function handleIsLoggedIn(app) {
+function handleIsLoggedIn(app, liff, data) {
   app.ports.liffInbound.send(['isLoggedIn', liff.isLoggedIn()])
 }
 
@@ -52,7 +53,7 @@ function handleIsLoggedIn(app) {
  * closeWindow handler.
  * @param {liff} liff
  */
-function handleCloseWindow(liff) {
+function handleCloseWindow(app, liff, data) {
   liff.closeWindow()
 }
 
@@ -61,7 +62,7 @@ function handleCloseWindow(liff) {
  * @param {*} app
  * @param {liff} liff
  */
-function handleGetProfile(app, liff) {
+function handleGetProfile(app, liff, data) {
   liff
     .getProfile()
     .then(profile => app.ports.liffInbound.send(['getProfile', profile]))
@@ -73,7 +74,7 @@ function handleGetProfile(app, liff) {
  * @param {liff} liff
  * @param {*} data
  */
-function handleOpenWindow(liff, data) {
+function handleOpenWindow(app, liff, data) {
   liff.openWindow(data)
 }
 
@@ -82,6 +83,6 @@ function handleOpenWindow(liff, data) {
  * @param {*} app
  * @param {liff} liff
  */
-function handleGetAccessToken(app, liff) {
+function handleGetAccessToken(app, liff, data) {
   app.ports.liffInbound.send(['getAccessToken', liff.getAccessToken()])
 }
