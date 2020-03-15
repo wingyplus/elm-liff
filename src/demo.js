@@ -8,7 +8,7 @@ function main() {
       liffId: process.env.LIFF_ID,
     },
     node: document.querySelector('main')
-  })
+  }).catch(err => alert(err))
 }
 
 function initializeDebugger() {

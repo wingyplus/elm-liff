@@ -23,6 +23,9 @@
  * @returns {Promise} Return Promise of Elm application.
  */
 export function init(ElmApp, config) {
+  if (!liff) {
+    return Promise.reject("ERROR: no LIFF SDK found. Please checking LIFF SDK in script tag.")
+  }
   return liff
     .init({ liffId: config.flags.liffId })
     .then(() => ElmApp.init(config))
