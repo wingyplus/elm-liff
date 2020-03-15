@@ -93,24 +93,29 @@ update msg model =
             ( model, Liff.openWindow <| Liff.External "https://line.me" )
 
         LiffReply reply ->
-            case reply of
-                Liff.IsLoggedInReply loggedIn ->
-                    ( { model | isLoggedIn = loggedIn }, Cmd.none )
+            handleLiffReply reply model
 
-                Liff.GetProfileReply profile ->
-                    ( { model | profile = profile }, Cmd.none )
 
-                Liff.ErrorReply err ->
-                    ( { model | error = err }, Cmd.none )
+handleLiffReply : Liff.Reply -> Model -> ( Model, Cmd Msg )
+handleLiffReply reply model =
+    case reply of
+        Liff.IsLoggedInReply loggedIn ->
+            ( { model | isLoggedIn = loggedIn }, Cmd.none )
 
-                Liff.GetAccessTokenReply token ->
-                    ( { model | token = token }, Cmd.none )
+        Liff.GetProfileReply profile ->
+            ( { model | profile = profile }, Cmd.none )
 
-                Liff.GetLanguageReply lang ->
-                    ( { model | language = lang }, Cmd.none )
+        Liff.ErrorReply err ->
+            ( { model | error = err }, Cmd.none )
 
-                Liff.NoopReply ->
-                    ( model, Cmd.none )
+        Liff.GetAccessTokenReply token ->
+            ( { model | token = token }, Cmd.none )
+
+        Liff.GetLanguageReply lang ->
+            ( { model | language = lang }, Cmd.none )
+
+        Liff.NoopReply ->
+            ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
