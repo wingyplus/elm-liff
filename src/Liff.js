@@ -29,6 +29,9 @@ export function start(app, liff) {
       case 'getLanguage':
         handleGetLanguage(app, liff, data)
         break;
+      case 'getVersion':
+        handleGetVersion(app, liff, data)
+        break;
     }
   })
 }
@@ -97,4 +100,13 @@ function handleGetAccessToken(app, liff, data) {
  */
 function handleGetLanguage(app, liff, data) {
   app.ports.liffInbound.send(['getLanguage', liff.getLanguage()])
+}
+
+/**
+ * getVersion handler.
+ * @param {*} app
+ * @param {liff} liff
+ */
+function handleGetVersion(app, liff, data) {
+  app.ports.liffInbound.send(['getVersion', liff.getVersion()])
 }

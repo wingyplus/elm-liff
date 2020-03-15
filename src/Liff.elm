@@ -7,6 +7,7 @@ port module Liff exposing
     , getAccessToken
     , getLanguage
     , getProfile
+    , getVersion
     , isLoggedIn
     , openWindow
     , sendMessages
@@ -45,6 +46,8 @@ type Reply
     | GetAccessTokenReply String
       -- It's returns value from liff.getLanguage().
     | GetLanguageReply String
+      -- It's returns value from liff.getVersion().
+    | GetVersionReply String
       -- It's returns value when receive something unexpected from
       -- inbound port.
     | NoopReply
@@ -89,6 +92,14 @@ subscription f =
                         Err err ->
                             f <| ErrorReply <| D.errorToString err
 
+                ( "getVersion", data ) ->
+                    case D.decodeValue D.string data of
+                        Ok v ->
+                            f <| GetVersionReply v
+
+                        Err err ->
+                            f <| ErrorReply <| D.errorToString err
+
                 _ ->
                     f NoopReply
 
@@ -126,7 +137,7 @@ getProfile =
 {-| TODO(wingyplus): implements it
 -}
 getVersion =
-    Cmd.none
+    liffOutbound ( "getVersion", E.null )
 
 
 {-| Checks whether the user is logged in.

@@ -24,6 +24,7 @@ type alias Model =
     , token : String
     , error : String
     , language : String
+    , version : String
     }
 
 
@@ -50,11 +51,13 @@ init _ =
       , error = ""
       , token = ""
       , language = ""
+      , version = ""
       }
     , Cmd.batch
         [ Liff.isLoggedIn
         , Liff.getAccessToken
         , Liff.getLanguage
+        , Liff.getVersion
         ]
     )
 
@@ -114,6 +117,9 @@ handleLiffReply reply model =
         Liff.GetLanguageReply lang ->
             ( { model | language = lang }, Cmd.none )
 
+        Liff.GetVersionReply v ->
+            ( { model | version = v }, Cmd.none )
+
         Liff.NoopReply ->
             ( model, Cmd.none )
 
@@ -133,6 +139,8 @@ view model =
         , div []
             [ button [ onClick SendLocationMessage ] [ text "Send Location" ]
             ]
+        , div []
+            [ text ("My version: " ++ model.version) ]
         , div []
             [ text ("My language: " ++ model.language) ]
         , div []
