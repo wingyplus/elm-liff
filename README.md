@@ -9,8 +9,9 @@ Provides a LIFF SDK 2.+ ports for Elm application.
 3. Add `Liff.init(elmApp, {flags: {liffId: "your liff id"}})` to your code.
 4. Done.
 
-If it won't work or you have a problem, you can see an example
-in `src/demo.js` or open an issue.
+If it won't work or you have some troubles, you can see an example
+in `src/demo.js` or open an issue and mention me, I'll help you as
+soon as I can.
 
 ## Limitation
 
@@ -47,6 +48,16 @@ Here is the list that this library already supported:
 - [ ] liff.bluetooth.getAvailability()
 - [ ] liff.bluetooth.requestDevice()
 - [ ] liff.bluetooth.referringDevice
+
+For message types:
+
+- [x] Text Message
+- [x] Image Message
+- [x] Audio Message
+- [x] Video Message
+- [x] Location Message
+- [ ] Template Messgae with only URI Action
+- [ ] Flex Message
 
 ## Credit
 
