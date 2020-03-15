@@ -21,6 +21,7 @@ type alias Model =
     { text : String
     , isLoggedIn : Bool
     , profile : Liff.UserProfile
+    , token : String
     , error : String
     }
 
@@ -46,8 +47,9 @@ init _ =
             , statusMessage = Nothing
             }
       , error = ""
+      , token = ""
       }
-    , Liff.isLoggedIn
+    , Cmd.batch [ Liff.isLoggedIn, Liff.getAccessToken ]
     )
 
 
@@ -95,6 +97,9 @@ update msg model =
                 Liff.ErrorReply err ->
                     ( { model | error = err }, Cmd.none )
 
+                Liff.GetAccessTokenReply token ->
+                    ( { model | token = token }, Cmd.none )
+
                 Liff.NoopReply ->
                     ( model, Cmd.none )
 
@@ -116,6 +121,8 @@ view model =
             ]
         , div []
             [ text ("IsLoggedIn? " ++ b2s model.isLoggedIn) ]
+        , div []
+            [ text ("My access token: " ++ omitAccessToken model.token) ]
         , div []
             [ button [ onClick CloseWindow ] [ text "Closing Window." ] ]
         , div []
@@ -153,4 +160,12 @@ omitUserId userId =
     String.replace
         (String.slice 5 15 userId)
         (String.repeat 10 "*")
+        userId
+
+
+omitAccessToken : String -> String
+omitAccessToken userId =
+    String.replace
+        (String.slice 5 25 userId)
+        (String.repeat 20 "*")
         userId

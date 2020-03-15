@@ -23,6 +23,8 @@ export function start(app, liff) {
       case 'openWindow':
         handleOpenWindow(liff, data)
         break;
+      case 'getAccessToken':
+        handleGetAccessToken(app, liff)
     }
   })
 }
@@ -73,4 +75,13 @@ function handleGetProfile(app, liff) {
  */
 function handleOpenWindow(liff, data) {
   liff.openWindow(data)
+}
+
+/**
+ * getAccessToken handler.
+ * @param {*} app
+ * @param {liff} liff
+ */
+function handleGetAccessToken(app, liff) {
+  app.ports.liffInbound.send(['getAccessToken', liff.getAccessToken()])
 }

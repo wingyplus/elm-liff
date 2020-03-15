@@ -4,6 +4,7 @@ port module Liff exposing
     , Url(..)
     , UserProfile
     , closeWindow
+    , getAccessToken
     , getProfile
     , isLoggedIn
     , openWindow
@@ -39,6 +40,8 @@ type Reply
       -- It's an error when something is wrong such as cannot
       -- decode json, liff has an error, etc.
     | ErrorReply String
+      -- It's returns value from liff.getAccessToken().
+    | GetAccessTokenReply String
       -- It's returns value when receive something unexpected from
       -- inbound port.
     | NoopReply
@@ -67,6 +70,14 @@ subscription f =
                         Err err ->
                             f <| ErrorReply <| D.errorToString err
 
+                ( "getAccessToken", data ) ->
+                    case D.decodeValue D.string data of
+                        Ok token ->
+                            f <| GetAccessTokenReply token
+
+                        Err err ->
+                            f <| ErrorReply <| D.errorToString err
+
                 _ ->
                     f NoopReply
 
@@ -85,7 +96,7 @@ closeWindow =
 {-| TODO(wingyplus): implements it
 -}
 getAccessToken =
-    Cmd.none
+    liffOutbound ( "getAccessToken", E.null )
 
 
 {-| TODO(wingyplus): implements it

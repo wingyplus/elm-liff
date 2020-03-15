@@ -34,4 +34,9 @@ declare module liff {
    * @param param0
    */
   function openWindow({ url: string, external: boolean }): void
+
+  /**
+   * Gets the current user's access token.
+   */
+  function getAccessToken(): string
 }
