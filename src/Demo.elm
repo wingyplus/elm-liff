@@ -1,10 +1,20 @@
-module Demo exposing (main)
+port module Demo exposing (main)
 
 import Browser
 import Html exposing (Html, button, div, h1, img, input, p, section, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Liff exposing (Message(..))
+
+
+{-| A LIFF outbound port.
+-}
+port liffOutbound : Liff.Outbound msg
+
+
+{-| A LIFF inbound port.
+-}
+port liffInbound : Liff.Inbound msg
 
 
 main : Program () Model Msg
@@ -54,10 +64,10 @@ init _ =
       , version = ""
       }
     , Cmd.batch
-        [ Liff.isLoggedIn
-        , Liff.getAccessToken
-        , Liff.getLanguage
-        , Liff.getVersion
+        [ Liff.isLoggedIn liffOutbound
+        , Liff.getAccessToken liffOutbound
+        , Liff.getLanguage liffOutbound
+        , Liff.getVersion liffOutbound
         ]
     )
 
@@ -71,12 +81,12 @@ update msg model =
         SendTextMessage ->
             ( -- resetting text.
               { model | text = "" }
-            , Liff.sendMessages [ TextMessage model.text ]
+            , Liff.sendMessages liffOutbound [ TextMessage model.text ]
             )
 
         SendLocationMessage ->
             ( model
-            , Liff.sendMessages
+            , Liff.sendMessages liffOutbound
                 [ LocationMessage
                     { title = "my location"
                     , address = "Phahonyothin Rd, Thanon Phaya Thai, Ratchathewi, Bangkok 10400"
@@ -87,13 +97,13 @@ update msg model =
             )
 
         GetProfile ->
-            ( model, Liff.getProfile )
+            ( model, Liff.getProfile liffOutbound )
 
         CloseWindow ->
-            ( model, Liff.closeWindow )
+            ( model, Liff.closeWindow liffOutbound )
 
         OpenWindow ->
-            ( model, Liff.openWindow <| Liff.External "https://line.me" )
+            ( model, Liff.openWindow liffOutbound <| Liff.External "https://line.me" )
 
         LiffReply reply ->
             handleLiffReply reply model
@@ -126,7 +136,7 @@ handleLiffReply reply model =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Liff.subscription LiffReply
+    Liff.subscription liffInbound LiffReply
 
 
 view : Model -> Html Msg

@@ -1,5 +1,7 @@
-port module Liff exposing
-    ( Message(..)
+module Liff exposing
+    ( Inbound
+    , Message(..)
+    , Outbound
     , Reply(..)
     , Url(..)
     , UserProfile
@@ -22,10 +24,16 @@ import Json.Encode as E
 -- PORTS
 
 
-port liffOutbound : ( String, E.Value ) -> Cmd msg
+{-| A protocol for outbound port.
+-}
+type alias Outbound msg =
+    ( String, E.Value ) -> Cmd msg
 
 
-port liffInbound : (( String, D.Value ) -> msg) -> Sub msg
+{-| A protocol for inbound port.
+-}
+type alias Inbound msg =
+    (( String, D.Value ) -> msg) -> Sub msg
 
 
 
@@ -55,9 +63,9 @@ type Reply
 
 {-| A subscription for LIFF app.
 -}
-subscription : (Reply -> msg) -> Sub msg
-subscription f =
-    liffInbound <|
+subscription : Inbound msg -> (Reply -> msg) -> Sub msg
+subscription inbound f =
+    inbound <|
         \evt ->
             case evt of
                 ( "getAccessToken", data ) ->
@@ -110,65 +118,66 @@ subscription f =
 
 {-| Closes the LIFF app.
 -}
-closeWindow : Cmd msg
-closeWindow =
-    liffOutbound ( "closeWindow", E.null )
+closeWindow : Outbound msg -> Cmd msg
+closeWindow outbound =
+    outbound ( "closeWindow", E.null )
 
 
 {-| Gets the current user's access token.
 -}
-getAccessToken : Cmd msg
-getAccessToken =
-    liffOutbound ( "getAccessToken", E.null )
+getAccessToken : Outbound msg -> Cmd msg
+getAccessToken outbound =
+    outbound ( "getAccessToken", E.null )
 
 
 {-| Gets the language settings of the environment in which the LIFF app is running.
 -}
-getLanguage : Cmd msg
-getLanguage =
-    liffOutbound ( "getLanguage", E.null )
+getLanguage : Outbound msg -> Cmd msg
+getLanguage outbound =
+    outbound ( "getLanguage", E.null )
 
 
 {-| Gets the current user's profile.
 -}
-getProfile : Cmd msg
-getProfile =
-    liffOutbound ( "getProfile", E.null )
+getProfile : Outbound msg -> Cmd msg
+getProfile outbound =
+    outbound ( "getProfile", E.null )
 
 
 {-| Gets the version of the LIFF SDK.
 -}
-getVersion : Cmd msg
-getVersion =
-    liffOutbound ( "getVersion", E.null )
+getVersion : Outbound msg -> Cmd msg
+getVersion outbound =
+    outbound ( "getVersion", E.null )
 
 
 {-| Checks whether the user is logged in.
 -}
-isLoggedIn : Cmd msg
-isLoggedIn =
-    liffOutbound ( "isLoggedIn", E.null )
+isLoggedIn : Outbound msg -> Cmd msg
+isLoggedIn outbound =
+    outbound ( "isLoggedIn", E.null )
 
 
 {-| Opens the specified URL in the in-app browser of LINE or external browser.
 -}
-openWindow : Url -> Cmd msg
-openWindow url =
-    liffOutbound ( "openWindow", encodeUrl url )
+openWindow : Outbound msg -> Url -> Cmd msg
+openWindow outbound url =
+    outbound ( "openWindow", encodeUrl url )
 
 
 {-| Sends messages on behalf of the user to the chat screen where the LIFF
 app is opened. If the LIFF app is opened on a screen other than the
 chat screen, messages cannot be sent.
 -}
-sendMessages : List Message -> Cmd msg
-sendMessages msgs =
-    liffOutbound ( "sendMessages", encodeMessages msgs )
+sendMessages : Outbound msg -> List Message -> Cmd msg
+sendMessages outbound msgs =
+    outbound ( "sendMessages", encodeMessages msgs )
 
 
 {-| TODO(wingyplus): implements it
 -}
-shareTargetPicker =
+shareTargetPicker : Outbound msg -> Cmd msg
+shareTargetPicker _ =
     Cmd.none
 
 
