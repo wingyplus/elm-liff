@@ -1,14 +1,12 @@
 {
   "name": "elm-liff",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "A LIFF interop for Elm",
+  "main": "src/Liff.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "demo": "NODE_ENV=* parcel index.html",
-    "build-demo": "NODE_ENV=* parcel build index.html",
     "fix": "eslint --fix src/*.js"
   },
   "keywords": [],
@@ -16,10 +14,7 @@
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "elm-hot": "^1.1.4",
     "eslint": "^6.8.0",
-    "eslint-config-google": "^0.14.0",
-    "node-elm-compiler": "^5.0.4",
-    "parcel-bundler": "^1.12.4"
+    "eslint-config-google": "^0.14.0"
   }
 }
